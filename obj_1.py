@@ -1,14 +1,16 @@
 def introspection_info(obj):
+
     info = {}
 
     info['type'] = type(obj)
 
-    info['attributes'] = [attr for attr in dir(obj) if not attr.startswith('__')]
+    info['attributes'] = [attr for attr in dir(obj)
+                         if not callable(getattr(obj, attr))]
 
     info['methods'] = [method for method in dir(obj)
-                       if callable(getattr(obj, method)) and not method.startswith('__')]
+                       if callable(getattr(obj, method))]
 
-    info['module'] = getattr(obj, '__module__', None)
+    info['module'] = obj.__class__.__module__
 
     if isinstance(obj, str):
         info['length'] = len(obj)
@@ -19,7 +21,6 @@ def introspection_info(obj):
         info['keys'] = list(obj.keys())
 
     return info
-
 class MyClass:
     def __init__(self, name):
         self.name = name
@@ -29,7 +30,7 @@ class MyClass:
 
 my_obj = MyClass('Kirill')
 my_list = [1, 2, 3]
-my_dict = {'name': 'Kirill', 'age': 30}
+my_dict = {'name': 'Kirill', 'age': 21}
 
 print(introspection_info(my_obj))
 print(introspection_info(my_list))
