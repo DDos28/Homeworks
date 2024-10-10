@@ -4,7 +4,7 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 
 import asyncio
 
-api = '*******************************'
+api = '***********************************'
 bot = Bot(token=api)
 dp = Dispatcher(bot, storage=MemoryStorage())
 
@@ -24,21 +24,24 @@ async def set_age(message):
 
 @dp.message_handler(state=UserState.age)
 async def set_growth(message, state):
-    await state.update_data(a=message.txt)
+    await state.update_data(a=message)
     await message.answer('Введите свой рост:')
     await UserState.growth.set()
 
 @dp.message_handler(state=UserState.growth)
 async def set_weight(message, state):
-    await state.update_data(g=message.txt)
+    await state.update_data(g=message)
     await message.answer('Введите свой вес:')
     await UserState.weight.set()
 
 @dp.message_handler(state=UserState.weight)
 async def send_calories(message, state):
-    await state.update_data(w=message.txt)
+    await state.update_data(w=message)
     data = await state.get_data()
-    result = int(10 * (data['w']) + 6,25 * int(data['g']) - 5 * int(data['a']) + 5)
+    age = int(data['a'])
+    growth = int(data['g'])
+    weight = int(data['w'])
+    result = 10 * weight + 6.25 * growth - 5 * age + 5
     await message.answer(f'Ваша норма в сутки {result} ккал.')
     await state.finish()
 
